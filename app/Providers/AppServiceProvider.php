@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Z3d0X\FilamentFabricator\Facades\FilamentFabricator;
+use Z3d0X\FilamentFabricator\Forms\Components\PageBuilder;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,10 +21,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Z3d0X\FilamentFabricator\Facades\FilamentFabricator::registerStyles([
-            'https://unpkg.com/tippy.js@6/dist/tippy.css', //external url
-            app(\Illuminate\Foundation\Vite::class)('resources/css/app.css'), //vite
-            asset('css/app.css'), // asset from public folder
+        // Загрузка ресурсов
+        FilamentFabricator::registerStyles([
+            //external url
+            'https://unpkg.com/tippy.js@6/dist/tippy.css',
+            //vite
+            app(\Illuminate\Foundation\Vite::class)('resources/css/app.css'),
+            // asset from public folder
+            asset('css/app.css'),
         ]);
+
+        // Настройки PageBuilder
+        PageBuilder::configureUsing(function (PageBuilder $builder) {
+            $builder->collapsed(); //You can use any method supported by the Builder field
+        });
     }
 }
