@@ -87,7 +87,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            // Автоматический вход при разработке
+            // TODO: Удалить Автоматический вход при разработке
             // 'login' => \Filament\Http\Livewire\Auth\Login::class,
             'login' => \App\Filament\Pages\Login::class,
         ],
