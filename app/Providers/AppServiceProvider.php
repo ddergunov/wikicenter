@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Z3d0X\FilamentFabricator\Facades\FilamentFabricator::registerStyles([
+            'https://unpkg.com/tippy.js@6/dist/tippy.css', //external url
+            app(\Illuminate\Foundation\Vite::class)('resources/css/app.css'), //vite
+            asset('css/app.css'), // asset from public folder
+        ]);
     }
 }
