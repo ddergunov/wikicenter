@@ -2,16 +2,15 @@
 
 namespace App\Providers;
 
-use Awcodes\Curator\CurationPreset;
-use Awcodes\Curator\Facades\Curator;
-use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\ServiceProvider;
-use Z3d0X\FilamentFabricator\Facades\FilamentFabricator;
-use Z3d0X\FilamentFabricator\Forms\Components\PageBuilder;
+
 
 class AppServiceProvider extends ServiceProvider
 {
+    private static bool $pageBuilderConfigured = false;
+    private static bool $curatorPresetsSet = false;
+
     /**
      * Register any application services.
      */
@@ -25,45 +24,49 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $vite = app(Vite::class)('resources/css/app.css');
+
         // Тема filament
-        Filament::serving(function () {
+        \Filament\Facades\Filament::serving(function () use ($vite) {
             // Using Vite
-            Filament::registerTheme(
-                app(Vite::class)('resources/css/app.css'),
-            );
+            \Filament\Facades\Filament::registerTheme($vite);
         });
 
         // Загрузка ресурсов
-        FilamentFabricator::registerStyles([
-            //external url
-            'https://unpkg.com/tippy.js@6/dist/tippy.css',
-            //vite
-            app(Vite::class)('resources/css/app.css'),
-            // asset from public folder
-            asset('css/app.css'),
+        \Z3d0X\FilamentFabricator\Facades\FilamentFabricator::registerStyles([
+            // 'https://unpkg.com/tippy.js@6/dist/tippy.css',//external url
+            $vite, //vite
+            // asset('css/app.css'),// asset from public folder
         ]);
 
         // Настройки PageBuilder
-        PageBuilder::configureUsing(function (PageBuilder $builder) {
-            $builder->collapsed(); //You can use any method supported by the Builder field
-        });
+        if (!self::$pageBuilderConfigured) {
+            \Z3d0X\FilamentFabricator\Forms\Components\PageBuilder::configureUsing(function (\Z3d0X\FilamentFabricator\Forms\Components\PageBuilder $builder) {
+                $builder->collapsed(); //You can use any method supported by the Builder field
+            });
+            self::$pageBuilderConfigured = true;
+        }
 
         // Настройки Curation Preset
-        Curator::curationPresets([
-            CurationPreset::make('thumbnail')
-                ->label('Thumbnail')
-                ->width(200)
-                ->height(200)
-                ->format('webp')
-                ->quality(80),
-            CurationPreset::make('hero')
-                ->label('Hero')
-                ->width(960)
-                ->height(300),
-            CurationPreset::make(name: 'og-image')
-                ->label('OG Image')
-                ->width(1200)
-                ->height(630),
-        ]);
+        if (!self::$curatorPresetsSet) {
+            \Awcodes\Curator\Facades\Curator::curationPresets([
+                // настройки пресетов...
+                \Awcodes\Curator\CurationPreset::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->width(200)
+                    ->height(200)
+                    ->format('webp')
+                    ->quality(80),
+                \Awcodes\Curator\CurationPreset::make('hero')
+                    ->label('Hero')
+                    ->width(960)
+                    ->height(300),
+                \Awcodes\Curator\CurationPreset::make(name: 'og-image')
+                    ->label('OG Image')
+                    ->width(1200)
+                    ->height(630),
+            ]);
+            self::$curatorPresetsSet = true;
+        }
     }
 }
