@@ -2,18 +2,13 @@
 
 namespace App\Filament\Resources\PageResource\Pages;
 
+use App\Actions\GeneratePdf;
 use Filament\Pages\Actions;
 use Filament\Pages\Actions\Action;
 use Z3d0X\FilamentFabricator\Facades\FilamentFabricator;
 
 class EditPage extends \Z3d0X\FilamentFabricator\Resources\PageResource\Pages\EditPage
 {
-    protected static string $resource = PageResource::class;
-
-    public static function getResource(): string
-    {
-        return config('filament-fabricator.page-resource') ?? static::$resource;
-    }
 
     protected function getActions(): array
     {
@@ -26,6 +21,13 @@ class EditPage extends \Z3d0X\FilamentFabricator\Resources\PageResource\Pages\Ed
                 ->icon('heroicon-o-external-link')
                 ->openUrlInNewTab()
                 ->color('success')
+                ->visible(config('filament-fabricator.routing.enabled')),
+            Action::make('generate-pdf')
+                ->label(__('Generate PDF'))
+                ->action(fn() => (new GeneratePdf)($this->record->id))
+                ->icon('heroicon-o-external-link')
+                ->openUrlInNewTab()
+                ->color('primary')
                 ->visible(config('filament-fabricator.routing.enabled')),
             Action::make('save')
                 ->action('save')
