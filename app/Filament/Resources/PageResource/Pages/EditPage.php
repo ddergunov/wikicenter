@@ -12,6 +12,7 @@ class EditPage extends \Z3d0X\FilamentFabricator\Resources\PageResource\Pages\Ed
 
     protected function getActions(): array
     {
+
         return [
             // Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
