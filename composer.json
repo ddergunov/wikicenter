@@ -16,6 +16,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "spatie/browsershot": "^3.58",
         "z3d0x/filament-fabricator": "^1.1"
     },
     "require-dev": {
